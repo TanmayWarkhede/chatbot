@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>College Chatbot</title>
+</head>
+<body>
+    <div class="container">
+        <h1>College Chatbot</h1>
+        <div id="chatbox">
+            <div id="responses"></div>
+            <input type="text" id="user-input" placeholder="Ask me anything...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById("send-btn").onclick = function() {
+            const userInput = document.getElementById("user-input").value;
+            fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responsesDiv = document.getElementById("responses");
+                responsesDiv.innerHTML += "<div><strong>You:</strong> " + userInput + "</div>";
+                responsesDiv.innerHTML += "<div><strong>Bot:</strong> " + data.answer + "</div>";
+                document.getElementById("user-input").value = '';
+            });
+        };
+    </script>
+</body>
+</html>
